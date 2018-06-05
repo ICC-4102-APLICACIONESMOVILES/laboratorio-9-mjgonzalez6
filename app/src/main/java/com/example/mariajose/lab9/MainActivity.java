@@ -19,7 +19,21 @@ public class MainActivity extends AppCompatActivity {
         webView = (WebView) findViewById(R.id.webview);
         webView.setWebViewClient(new MyWebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
+
+        webView.setWebChromeClient(new WebChromeClient(){
+            public void onConsoleMessage(String message, int linenumber, String sourceId){
+                Log.d("webview", message + " --- from line "
+                        + linenumber + " of "
+                        + sourceId
+                );
+            }
+        });
+
+        webView.addJavascriptInterface(new WebAppInterface(this), "Android");
+
+
         webView.loadUrl("http://demo.tutorialzine.com/2012/04/mobile-touch-gallery/");
+        //webView.loadUrl("http://saf.uandes.cl/");
     }
 
     @Override
@@ -28,25 +42,13 @@ public class MainActivity extends AppCompatActivity {
             webView.goBack();
             return true;
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void onBackPressed()
     {
-        if (webView.canGoBack())
-        {
-            webView.goBack();
-        }
-        else
-        {
-            super.onBackPressed();
-            webView.setWebChromeClient(new WebChromeClient() {
-                public void onConsoleMessage(String message, int lineNumber, String sourceID){
-                    Log.d("MyApplication", message + " Back");
-                }
-            });
-        }
+       Log.d("webView", "Se presiono adtras");
     }
 
 
